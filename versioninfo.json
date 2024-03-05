@@ -1,0 +1,32 @@
+{
+    "FixedFileInfo": {
+      "FileVersion": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0,
+        "Build": 0
+      },
+      "ProductVersion": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0,
+        "Build": 0
+      },
+      "FileFlagsMask": "3F",
+      "FileFlags": "00",
+      "FileOS": "040004",
+      "FileType": "01",
+      "FileSubType": "00"
+    },
+    "StringFileInfo": {
+      "LanguageName": "en-US",
+      "LegalCopyright": "Copyright © 2024 RXD-MODS",
+      "FileVersion": "1.0.0.0",
+      "ProductVersion": "1.0.0.0",
+      "InternalName": "dvpl_tool cli/gui",
+      "OriginalFilename": "main.go",
+      "ProductName": "DVPL_TOOL CLI/GUI",
+      "FileDescription": "A CLI/GUI Tool Coded In Golang To Convert WoTB ( Dava ) SmartDLC DVPL File Based On LZ4_HC Compression."
+    },
+    "IconPath": "resource/dvpl_tool.ico"
+}
