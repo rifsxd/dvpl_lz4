@@ -47,7 +47,7 @@ type DVPLFooter struct {
 // Info variables
 const Dev = "RifsxD"
 const Name = "DVPL_LZ4 CLI TOOL"
-const Version = "1.1.0"
+const Version = "1.1.1"
 const Repo = "https://github.com/rifsxd/dvpl_lz4"
 const Web = "https://rxd-mods.xyz"
 const Commit = "05/03/2024"
@@ -221,7 +221,7 @@ func processFiles(directoryOrFile string, config *Config) (successCount, failure
 			}
 
 			if err != nil {
-				fmt.Printf("File %s failed to convert due to %v\n", directoryOrFile, err)
+				fmt.Printf("%sFile%s %s %sfailed to convert due to %v%s\n", RedColor, ResetColor, directoryOrFile, RedColor, err, ResetColor)
 				return 0, 1, 0, nil // Return failure count as 1 for this file
 			}
 
@@ -231,7 +231,7 @@ func processFiles(directoryOrFile string, config *Config) (successCount, failure
 				return 0, 0, 0, err
 			}
 
-			fmt.Printf("File %s has been successfully %s into %s%s%s\n", filePath, getAction(config.Mode), GreenColor, newName, ResetColor)
+			fmt.Printf("%sFile%s %s has been successfully %s into %s%s%s\n", GreenColor, ResetColor, filePath, getAction(config.Mode), GreenColor, newName, ResetColor)
 
 			if !config.KeepOriginals {
 				err := os.Remove(filePath)
