@@ -1,5 +1,5 @@
-# Dvpl_Lz4 Cli & Gui Converter
-- A Cli & Gui Tool Coded In Golang To Convert WoTB ( Dava ) SmartDLC DVPL File Based On LZ4 High Compression.
+# Dvpl_Lz4 Cli/Gui Converter
+- A Cli/Gui Tool Coded In Golang To Convert WoTB ( Dava ) SmartDLC DVPL File Based On LZ4 High Compression.
 
 Usage :
 
