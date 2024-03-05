@@ -24,6 +24,12 @@ Usage :
 		$ dvpl_lz4 -mode help
 		```
 		```
+		$ dvpl_lz4 -mode gui
+		```
+		```
+		$ dvpl_lz4 -mode gui -path /path/to/decompress
+		```
+		```
 		$ dvpl_lz4 -mode decompress -path /path/to/decompress/compress
 		```
 		```
@@ -48,7 +54,7 @@ Usage :
 		$ dvpl_lz4 -mode dcompress -keep-originals -path /path/to/decompress/compress.yaml
 		```
 		```
-		$ dvpl_lz4 -mode compress -path /path/to/decompress/compress.yaml -ignore .exe,.dll
+		$ dvpl_lz4 -mode compress -path /path/to/decompress -ignore .exe,.dll
 		```
 
 Building :

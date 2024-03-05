@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"embed"
+	"flag"
 	"fmt"
+	"os"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -26,19 +28,19 @@ func Gui() {
 
 	config := &Config{}
 
-	/* Check if command-line arguments were provided
-	if len(os.Args) > 1 {
-		// Use the provided path as the initial path
-		config.Path = os.Args[1]
-	} else {
-		// Get the current working directory and set it as the initial path
-		initialPath, err := os.Getwd()
-		if err != nil {
-			// Handle the error, e.g., show a message to the user
-			initialPath = "" // Default to an empty string if there's an error
+	// Parse command-line arguments
+	flag.Parse()
+
+	// Check if the GlobalPath variable is empty
+	if GlobalPath == "" {
+		// If it is, get the current directory
+		if initialPath, err := os.Getwd(); err == nil {
+			GlobalPath = initialPath
 		}
-		config.Path = initialPath
-	} */
+	}
+
+	// Set the path to the value of the global variable
+	config.Path = GlobalPath
 
 	compressButton := widget.NewButton("Compress", func() {
 		config.Mode = "compress"
@@ -65,7 +67,7 @@ func Gui() {
 	}
 
 	pathEntry := widget.NewEntry()
-	pathEntry.SetText(config.Path)
+	pathEntry.SetText(GlobalPath) // Set the text to the value of the global variable
 	pathEntry.SetPlaceHolder("Enter directory or file path")
 	pathEntry.OnChanged = func(path string) {
 		config.Path = path

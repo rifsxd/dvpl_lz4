@@ -13,6 +13,8 @@ import (
 	"github.com/rifsxd/dvpl_lz4/common/dvpl_logic"
 )
 
+var GlobalPath string
+
 const (
 	dvplExtension = ".dvpl"
 )
@@ -45,7 +47,7 @@ type DVPLFooter struct {
 // Info variables
 const Dev = "RifsxD"
 const Name = "DVPL_LZ4 CLI TOOL"
-const Version = "1.0.0"
+const Version = "1.1.0"
 const Repo = "https://github.com/rifsxd/dvpl_lz4"
 const Web = "https://rxd-mods.xyz"
 const Commit = "05/03/2024"
@@ -92,7 +94,7 @@ func parseCommandLineArgs() (*Config, error) {
 	config := &Config{}
 	flag.StringVar(&config.Mode, "mode", "", "Mode can be 'compress' / 'decompress' / 'help' (for an extended help guide).")
 	flag.BoolVar(&config.KeepOriginals, "keep-originals", false, "Keep original files after compression/decompression.")
-	flag.StringVar(&config.Path, "path", ".", "directory/files path to process. Default is the current directory.")
+	flag.StringVar(&config.Path, "path", "", "directory/files path to process. Default is the current directory.")
 	flag.StringVar(&config.Ignore, "ignore", "", "Comma-separated list of file extensions to ignore during compression.")
 
 	flag.Parse()
@@ -100,6 +102,17 @@ func parseCommandLineArgs() (*Config, error) {
 	if config.Mode == "" {
 		return nil, errors.New("no mode selected. Use '-help' for usage information")
 	}
+
+	// Check if the -path flag was provided
+	if config.Path == "" {
+		// If not, set the path to the current directory
+		if initialPath, err := os.Getwd(); err == nil {
+			config.Path = initialPath
+		}
+	}
+
+	// Set the global variable to the value of config.Path
+	GlobalPath = config.Path
 
 	return config, nil
 }
@@ -123,6 +136,10 @@ func printHelpMessage() {
 	• usage can be one of the following examples:
 
 		$ dvpl_lz4 -mode help
+		
+		$ dvpl_lz4 -mode gui
+
+		$ dvpl_lz4 -mode gui -path /path/to/decompress
 
 		$ dvpl_lz4 -mode decompress -path /path/to/decompress/compress
 		
@@ -140,7 +157,7 @@ func printHelpMessage() {
 		
 		$ dvpl_lz4 -mode dcompress -keep-originals -path /path/to/decompress/compress.yaml
 
-		$ dvpl_lz4 -mode compress -path /path/to/decompress/compress.yaml -ignore .exe,.dll
+		$ dvpl_lz4 -mode compress -path /path/to/decompress -ignore .exe,.dll
 	`)
 }
 
