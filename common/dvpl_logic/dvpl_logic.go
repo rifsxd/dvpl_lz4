@@ -66,7 +66,7 @@ func DecompressDVPL(buffer []byte) ([]byte, error) {
 
 	// Check if compressed size matches the footer
 	if uint32(len(targetBlock)) != footerData.CompressedSize {
-		return nil, errors.New("RedColor + DVPLSizeMismatch" + ResetColor)
+		return nil, errors.New(RedColor + "DVPLSizeMismatch" + ResetColor)
 	}
 
 	// Check CRC32 checksum
