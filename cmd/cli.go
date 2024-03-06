@@ -47,7 +47,7 @@ type DVPLFooter struct {
 // Info variables
 const Dev = "RifsxD"
 const Name = "DVPL_LZ4 CLI TOOL"
-const Version = "1.1.2"
+const Version = "1.1.3"
 const Repo = "https://github.com/rifsxd/dvpl_lz4"
 const Web = "https://rxd-mods.xyz"
 const Commit = "05/03/2024"
@@ -69,7 +69,8 @@ func Cli() {
 
 	config, err := parseCommandLineArgs()
 	if err != nil {
-		log.Printf("%sError%s parsing command-line arguments: %v", RedColor, ResetColor, err)
+		log.Printf("%sError%s parsing command-line arguments: %v -> %sFallback to GUI mode!%s", RedColor, ResetColor, err, YellowColor, ResetColor)
+		Gui() // Fallback to GUI mode if parseCommandLineArgs() errors out
 		return
 	}
 

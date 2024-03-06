@@ -9,5 +9,5 @@ package main
 import "github.com/rifsxd/dvpl_lz4/cmd"
 
 func main() {
-	cmd.Gui()
+	cmd.Cli() // change it to 'cmd.Gui()' for it to lauch gui app directly instead from gui mode flag
 }
