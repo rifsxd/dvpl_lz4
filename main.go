@@ -9,5 +9,5 @@ package main
 import "github.com/rifsxd/dvpl_lz4/cmd"
 
 func main() {
-	cmd.Cli()
+	cmd.Gui()
 }

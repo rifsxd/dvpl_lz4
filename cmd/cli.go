@@ -47,7 +47,7 @@ type DVPLFooter struct {
 // Info variables
 const Dev = "RifsxD"
 const Name = "DVPL_LZ4 CLI TOOL"
-const Version = "1.1.1"
+const Version = "1.1.2"
 const Repo = "https://github.com/rifsxd/dvpl_lz4"
 const Web = "https://rxd-mods.xyz"
 const Commit = "05/03/2024"
