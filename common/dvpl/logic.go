@@ -1,4 +1,4 @@
-package dvpl_logic
+package dvpl
 
 import (
 	"errors"
