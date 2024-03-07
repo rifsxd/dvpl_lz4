@@ -5,14 +5,7 @@ import (
 	"hash/crc32"
 
 	"github.com/pierrec/lz4/v4"
-)
-
-// ANSI color codes for pretty printing
-const (
-	RedColor    = "\033[31m"
-	GreenColor  = "\033[32m"
-	YellowColor = "\033[33m"
-	ResetColor  = "\033[0m"
+	"github.com/rifsxd/dvpl_lz4/common/colors"
 )
 
 // Constants related to DVPL format
@@ -66,19 +59,19 @@ func DecompressDVPL(buffer []byte) ([]byte, error) {
 
 	// Check if compressed size matches the footer
 	if uint32(len(targetBlock)) != footerData.CompressedSize {
-		return nil, errors.New(RedColor + "DVPLSizeMismatch" + ResetColor)
+		return nil, errors.New(colors.RedColor + "DVPLSizeMismatch" + colors.ResetColor)
 	}
 
 	// Check CRC32 checksum
 	if crc32.ChecksumIEEE(targetBlock) != footerData.CRC32 {
-		return nil, errors.New(RedColor + "DVPLCRC32Mismatch" + ResetColor)
+		return nil, errors.New(colors.RedColor + "DVPLCRC32Mismatch" + colors.ResetColor)
 	}
 
 	// Decompress based on compression type
 	if footerData.Type == dvplTypeNone {
 		// No compression applied, return the block as is
 		if footerData.OriginalSize != footerData.CompressedSize || footerData.Type != dvplTypeNone {
-			return nil, errors.New(RedColor + "DVPLTypeSizeMismatch" + ResetColor)
+			return nil, errors.New(colors.RedColor + "DVPLTypeSizeMismatch" + colors.ResetColor)
 		}
 		return targetBlock, nil
 	} else if footerData.Type == dvplTypeLZ4 {
@@ -91,14 +84,14 @@ func DecompressDVPL(buffer []byte) ([]byte, error) {
 
 		// Check if decompressed size matches the footer
 		if uint32(n) != footerData.OriginalSize {
-			return nil, errors.New(RedColor + "DVPLDecodeSizeMismatch" + ResetColor)
+			return nil, errors.New(colors.RedColor + "DVPLDecodeSizeMismatch" + colors.ResetColor)
 		}
 
 		return deDVPLBlock, nil
 	}
 
 	// Unknown compression type
-	return nil, errors.New(RedColor + "UNKNOWN DVPL FORMAT" + ResetColor)
+	return nil, errors.New(colors.RedColor + "UNKNOWN DVPL FORMAT" + colors.ResetColor)
 }
 
 // createDVPLFooter creates a DVPL footer from the provided data.
@@ -116,7 +109,7 @@ func createDVPLFooter(inputSize, compressedSize, crc32, typeVal uint32) []byte {
 func readDVPLFooter(buffer []byte) (*DVPLFooter, error) {
 	footerBuffer := buffer[len(buffer)-dvplFooterSize:]
 	if string(footerBuffer[16:]) != dvplFooter || len(footerBuffer) != dvplFooterSize {
-		return nil, errors.New(RedColor + "InvalidDVPLFooter" + ResetColor)
+		return nil, errors.New(colors.RedColor + "InvalidDVPLFooter" + colors.ResetColor)
 	}
 
 	footerData := &DVPLFooter{}
