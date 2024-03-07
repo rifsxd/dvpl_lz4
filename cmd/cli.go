@@ -11,7 +11,7 @@ import (
 	"time" // Import the time package for time tracking
 
 	"github.com/fatih/color"
-	"github.com/rifsxd/dvpl_lz4/common/dvpl_logic"
+	"github.com/rifsxd/dvpl_lz4/common/utils/dvpl_logic"
 )
 
 var GlobalPath string
@@ -48,7 +48,7 @@ type DVPLFooter struct {
 // Info variables
 const Dev = "RifsxD"
 const Name = "DVPL_LZ4 CLI TOOL"
-const Version = "1.2.0"
+const Version = "1.2.1"
 const Repo = "https://github.com/rifsxd/dvpl_lz4"
 const Web = "https://rxd-mods.xyz"
 const Commit = "07/03/2024"
