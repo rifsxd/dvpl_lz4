@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -104,15 +105,33 @@ func createSuccessContent() fyne.CanvasObject {
 }
 
 func convertFiles(myWindow fyne.Window, config *Config) {
+	startTime := time.Now() // Record start time
+
 	successCount, failureCount, ignoredCount, err := processFiles(config.Path, config)
 	if err != nil {
 		dialog.NewError(err, myWindow)
 		return
 	}
 
-	successContent := fmt.Sprintf("Successful conversions: %d\nFailed conversions: %d\nIgnored conversions: %d", successCount, failureCount, ignoredCount)
+	elapsedTime := time.Since(startTime) // Calculate elapsed time
+
+	successContent := fmt.Sprintf("Successful conversions: %d\nFailed conversions: %d\nIgnored conversions: %d\n\nTime taken: %s", successCount, failureCount, ignoredCount, formatElapsedTime(elapsedTime))
 	successDialog := dialog.NewInformation("Conversion Results", successContent, myWindow)
 	successDialog.SetDismissText("OK")
 
 	successDialog.Show()
+}
+
+func formatElapsedTime(elapsedTime time.Duration) string {
+	seconds := int(elapsedTime.Round(time.Second).Seconds())
+	minutes := seconds / 60
+	seconds %= 60
+	milliseconds := int(elapsedTime.Round(time.Millisecond).Milliseconds())
+
+	if minutes > 0 {
+		return fmt.Sprintf("%d min %d sec", minutes, seconds)
+	} else if seconds > 0 {
+		return fmt.Sprintf("%d sec", seconds)
+	}
+	return fmt.Sprintf("%d ms", milliseconds)
 }

@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time" // Import the time package for time tracking
 
 	"github.com/fatih/color"
 	"github.com/rifsxd/dvpl_lz4/common/dvpl_logic"
@@ -47,10 +48,10 @@ type DVPLFooter struct {
 // Info variables
 const Dev = "RifsxD"
 const Name = "DVPL_LZ4 CLI TOOL"
-const Version = "1.1.3"
+const Version = "1.2.0"
 const Repo = "https://github.com/rifsxd/dvpl_lz4"
 const Web = "https://rxd-mods.xyz"
-const Commit = "05/03/2024"
+const Commit = "06/03/2024"
 const Info = "A CLI/GUI Tool Coded In GoLang To Convert WoTB ( Dava ) SmartDLC DVPL File Based On LZ4 High Compression."
 
 func Cli() {
@@ -66,6 +67,8 @@ func Cli() {
 	cyan.Println("• Web:", Web)
 	cyan.Println("• Info:", Info)
 	fmt.Println()
+
+	startTime := time.Now() // Record start time
 
 	config, err := parseCommandLineArgs()
 	if err != nil {
@@ -88,6 +91,29 @@ func Cli() {
 		printHelpMessage()
 	default:
 		log.Fatalf("%sIncorrect mode selected. Use '-help' for information.%s", RedColor, ResetColor)
+	}
+
+	elapsedTime := time.Since(startTime) // Calculate elapsed time
+	printElapsedTime(elapsedTime)
+}
+
+func printElapsedTime(elapsedTime time.Duration) {
+	var colorCode string
+
+	// Determine the time unit and color
+	switch {
+	case elapsedTime.Seconds() < 1:
+		colorCode = GreenColor // Milliseconds
+		fmt.Printf("Processing took %s%d ms%s\n", colorCode, int(elapsedTime.Round(time.Millisecond).Milliseconds()), ResetColor)
+		return
+	case elapsedTime.Minutes() < 1:
+		colorCode = YellowColor // Seconds
+		fmt.Printf("Processing took %s%d s%s\n", colorCode, int(elapsedTime.Round(time.Second).Seconds()), ResetColor)
+		return
+	default:
+		colorCode = RedColor // Minutes
+		fmt.Printf("Processing took %s%d min%s\n", colorCode, int(elapsedTime.Round(time.Minute).Minutes()), ResetColor)
+		return
 	}
 }
 
