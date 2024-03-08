@@ -23,10 +23,10 @@
       "LegalCopyright": "Copyright © 2024 RXD-MODS",
       "FileVersion": "1.2.4.0",
       "ProductVersion": "1.2.4.0",
-      "InternalName": "dvpl_tool cli/gui",
-      "OriginalFilename": "main.go",
-      "ProductName": "DVPL_TOOL CLI/GUI",
-      "FileDescription": "A CLI/GUI Tool Coded In Golang To Convert WoTB ( Dava ) SmartDLC DVPL File Based On LZ4 High Compression."
+      "InternalName": "dvpl_tool cli lite",
+      "OriginalFilename": "dvpl_lz4_lite.go",
+      "ProductName": "DVPL_TOOL CLI LITE",
+      "FileDescription": "A LITE CLI Tool Coded In Golang To Convert WoTB ( Dava ) SmartDLC DVPL File Based On LZ4 High Compression."
     },
     "IconPath": "resource/dvpl_lz4.ico"
 }

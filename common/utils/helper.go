@@ -90,6 +90,7 @@ func PrintHelpMessage() {
 
         compress: compresses files into dvpl.
         decompress: decompresses dvpl files into standard files.
+		verify: verify compressed dvpl files to determine valid compression.
 		gui: opens the graphical user interface window.
         help: show this help message.
 
@@ -105,7 +106,7 @@ func PrintHelpMessage() {
 		
 		$ dvpl_lz4 -mode gui
 
-		$ dvpl_lz4 -mode gui -path /path/to/decompress
+		$ dvpl_lz4 -mode gui -path /path/to/gui
 
 		$ dvpl_lz4 -mode decompress -path /path/to/decompress/compress
 		
@@ -124,6 +125,10 @@ func PrintHelpMessage() {
 		$ dvpl_lz4 -mode dcompress -keep-originals -path /path/to/decompress/compress.yaml
 
 		$ dvpl_lz4 -mode compress -path /path/to/decompress -ignore .exe,.dll
+
+		$ dvpl_lz4 -mode verify -path /path/to/verify/compress.yaml.dvpl
+
+		$ dvpl_lz4 -mode verify -path /path/to/verify/
 	`)
 }
 
@@ -221,4 +226,59 @@ func getAction(mode string) string {
 		return colors.GreenColor + "compressed" + colors.ResetColor
 	}
 	return colors.GreenColor + "decompressed" + colors.ResetColor
+}
+
+func VerifyDVPLFiles(directoryOrFile string, config *Config) (successCount, failureCount, ignoredCount int, err error) {
+	// Initialize counters
+	successCount = 0
+	failureCount = 0
+	ignoredCount = 0
+
+	info, err := os.Stat(directoryOrFile)
+	if err != nil {
+		return 0, 0, 0, err
+	}
+
+	if info.IsDir() {
+		dirList, err := os.ReadDir(directoryOrFile)
+		if err != nil {
+			return 0, 0, 0, err
+		}
+
+		for _, dirItem := range dirList {
+			succ, fail, ignored, err := VerifyDVPLFiles(filepath.Join(directoryOrFile, dirItem.Name()), config)
+			if err != nil {
+				fmt.Printf("Error processing directory %s: %v\n", dirItem.Name(), err)
+			}
+			successCount += succ
+			failureCount += fail
+			ignoredCount += ignored
+		}
+	} else {
+		// Ignore non-.dvpl files during verification
+		if !strings.HasSuffix(directoryOrFile, dvplExtension) {
+			fmt.Printf("%sIgnoring%s file %s\n", colors.YellowColor, colors.ResetColor, directoryOrFile)
+			ignoredCount++
+			return successCount, failureCount, ignoredCount, nil
+		}
+
+		filePath := directoryOrFile
+		fileData, err := os.ReadFile(filePath)
+		if err != nil {
+			fmt.Printf("%sError%s reading file %s: %v\n", colors.RedColor, colors.ResetColor, directoryOrFile, err)
+			return 0, 0, 0, err
+		}
+
+		_, err = dvpl.DecompressDVPL(fileData)
+		if err != nil {
+			fmt.Printf("%sFile%s %s %sfailed to verify due to %v%s\n", colors.RedColor, colors.ResetColor, directoryOrFile, colors.RedColor, err, colors.ResetColor)
+			return 0, 1, 0, nil // Return failure count as 1 for this file
+		}
+
+		fmt.Printf("%sFile%s %s has been successfully %s\n", colors.GreenColor, colors.ResetColor, filePath, getAction(config.Mode))
+
+		successCount++
+	}
+
+	return successCount, failureCount, ignoredCount, nil
 }

@@ -56,7 +56,12 @@ Usage :
 		```
 		$ dvpl_lz4 -mode compress -path /path/to/decompress -ignore .exe,.dll
 		```
-
+		```
+		$ dvpl_lz4 -mode verify -path /path/to/verify/compress.yaml.dvpl
+		```
+		```
+		$ dvpl_lz4 -mode verify -path /path/to/verify/
+		```
 Building :
 
 - go 1.20+ required!

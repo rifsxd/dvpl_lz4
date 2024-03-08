@@ -77,9 +77,19 @@ func Gui() {
 		config.Path = path
 	}
 
+	// Create a button for the "Verify" operation
+	verifyButton := widget.NewButton("Verify", func() {
+		config := &utils.Config{
+			Mode: "verify",
+			Path: pathEntry.Text,
+			// Set other configuration options as needed
+		}
+		verifyFiles(myWindow, config) // Call the verifyFiles function
+	})
+
 	content := container.NewVBox(
 		widget.NewLabelWithStyle("DVPL_LZ4 GUI TOOL • "+meta.Version, fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
-		container.NewHBox(layout.NewSpacer(), compressButton, decompressButton, layout.NewSpacer()),
+		container.NewHBox(layout.NewSpacer(), compressButton, decompressButton, verifyButton, layout.NewSpacer()),
 		widget.NewForm(
 			widget.NewFormItem("Options:", keepOriginalsCheck),
 			widget.NewFormItem("Ignore:", ignoreCheck),
@@ -91,6 +101,9 @@ func Gui() {
 	myWindow.SetContent(content)
 	myWindow.Resize(fyne.NewSize(500, 200))
 	myWindow.ShowAndRun()
+
+	// Add the "Verify" button to the content
+	content.Add(verifyButton)
 }
 
 func convertFiles(myWindow fyne.Window, config *utils.Config) {
@@ -109,6 +122,27 @@ func convertFiles(myWindow fyne.Window, config *utils.Config) {
 	successDialog.SetDismissText("OK")
 
 	successDialog.Show()
+}
+
+func verifyFiles(myWindow fyne.Window, config *utils.Config) {
+	startTime := time.Now() // Record start time
+
+	// Call the verification function with the provided configuration
+	successCount, failureCount, ignoredCount, err := utils.VerifyDVPLFiles(config.Path, config)
+	if err != nil {
+		// Display an error dialog if verification fails
+		dialog.NewError(err, myWindow).Show()
+		return
+	}
+
+	// Calculate elapsed time
+	elapsedTime := time.Since(startTime)
+
+	// Display verification results to the user
+	verifyContent := fmt.Sprintf("Successful verifications: %d\nFailed verifications: %d\nIgnored files: %d\n\nTime taken: %s", successCount, failureCount, ignoredCount, formatElapsedTime(elapsedTime))
+	verifyDialog := dialog.NewInformation("Verification Results", verifyContent, myWindow)
+	verifyDialog.SetDismissText("OK")
+	verifyDialog.Show()
 }
 
 func formatElapsedTime(elapsedTime time.Duration) string {
