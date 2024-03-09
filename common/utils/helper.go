@@ -26,6 +26,7 @@ type Config struct {
 	Path          string // New field to specify the directory path.
 	Ignore        string
 	IgnoreExt     bool
+	Silent        bool // New field to specify silent mode.
 }
 
 // DVPLFooter represents the DVPL file footer data.
@@ -56,12 +57,14 @@ func PrintElapsedTime(elapsedTime time.Duration) {
 	}
 }
 
+// ParseCommandLineArgs parses the command-line arguments and returns the configuration.
 func ParseCommandLineArgs() (*Config, error) {
 	config := &Config{}
 	flag.StringVar(&config.Mode, "mode", "", "Mode can be 'compress' / 'decompress' / 'help' (for an extended help guide).")
 	flag.BoolVar(&config.KeepOriginals, "keep-originals", false, "Keep original files after compression/decompression.")
 	flag.StringVar(&config.Path, "path", "", "directory/files path to process. Default is the current directory.")
 	flag.StringVar(&config.Ignore, "ignore", "", "Comma-separated list of file extensions to ignore during compression.")
+	flag.BoolVar(&config.Silent, "silent", false, "Run in silent mode (suppresses log prints from process).")
 
 	flag.Parse()
 
@@ -132,6 +135,7 @@ func PrintHelpMessage() {
 	`)
 }
 
+// ProcessFiles process files in the directory or file specified in the config.
 func ProcessFiles(directoryOrFile string, config *Config) (successCount, failureCount, ignoredCount int, err error) {
 	// Initialize counters
 	successCount = 0
@@ -202,7 +206,9 @@ func ProcessFiles(directoryOrFile string, config *Config) (successCount, failure
 				return 0, 0, 0, err
 			}
 
-			fmt.Printf("%sFile%s %s has been successfully %s into %s%s%s\n", colors.GreenColor, colors.ResetColor, filePath, getAction(config.Mode), colors.GreenColor, newName, colors.ResetColor)
+			if !config.Silent {
+				fmt.Printf("%sFile%s %s has been successfully %s into %s%s%s\n", colors.GreenColor, colors.ResetColor, filePath, getAction(config.Mode), colors.GreenColor, newName, colors.ResetColor)
+			}
 
 			if !config.KeepOriginals {
 				err := os.Remove(filePath)
@@ -213,7 +219,9 @@ func ProcessFiles(directoryOrFile string, config *Config) (successCount, failure
 
 			successCount++
 		} else {
-			fmt.Printf("%sIgnoring%s file %s\n", colors.YellowColor, colors.ResetColor, directoryOrFile)
+			if !config.Silent {
+				fmt.Printf("%sIgnoring%s file %s\n", colors.YellowColor, colors.ResetColor, directoryOrFile)
+			}
 			ignoredCount++
 		}
 	}
@@ -248,7 +256,9 @@ func VerifyDVPLFiles(directoryOrFile string, config *Config) (successCount, fail
 		for _, dirItem := range dirList {
 			succ, fail, ignored, err := VerifyDVPLFiles(filepath.Join(directoryOrFile, dirItem.Name()), config)
 			if err != nil {
-				fmt.Printf("Error processing directory %s: %v\n", dirItem.Name(), err)
+				if !config.Silent {
+					fmt.Printf("Error processing directory %s: %v\n", dirItem.Name(), err)
+				}
 			}
 			successCount += succ
 			failureCount += fail
@@ -257,7 +267,9 @@ func VerifyDVPLFiles(directoryOrFile string, config *Config) (successCount, fail
 	} else {
 		// Ignore non-.dvpl files during verification
 		if !strings.HasSuffix(directoryOrFile, dvplExtension) {
-			fmt.Printf("%sIgnoring%s file %s\n", colors.YellowColor, colors.ResetColor, directoryOrFile)
+			if !config.Silent {
+				fmt.Printf("%sIgnoring%s file %s\n", colors.YellowColor, colors.ResetColor, directoryOrFile)
+			}
 			ignoredCount++
 			return successCount, failureCount, ignoredCount, nil
 		}
@@ -265,17 +277,23 @@ func VerifyDVPLFiles(directoryOrFile string, config *Config) (successCount, fail
 		filePath := directoryOrFile
 		fileData, err := os.ReadFile(filePath)
 		if err != nil {
-			fmt.Printf("%sError%s reading file %s: %v\n", colors.RedColor, colors.ResetColor, directoryOrFile, err)
+			if !config.Silent {
+				fmt.Printf("%sError%s reading file %s: %v\n", colors.RedColor, colors.ResetColor, directoryOrFile, err)
+			}
 			return 0, 0, 0, err
 		}
 
 		_, err = dvpl.DecompressDVPL(fileData)
 		if err != nil {
-			fmt.Printf("%sFile%s %s %sfailed to verify due to %v%s\n", colors.RedColor, colors.ResetColor, directoryOrFile, colors.RedColor, err, colors.ResetColor)
+			if !config.Silent {
+				fmt.Printf("%sFile%s %s %sfailed to verify due to %v%s\n", colors.RedColor, colors.ResetColor, directoryOrFile, colors.RedColor, err, colors.ResetColor)
+			}
 			return 0, 1, 0, nil // Return failure count as 1 for this file
 		}
 
-		fmt.Printf("%sFile%s %s has been successfully %s\n", colors.GreenColor, colors.ResetColor, filePath, getAction(config.Mode))
+		if !config.Silent {
+			fmt.Printf("%sFile%s %s has been successfully %s\n", colors.GreenColor, colors.ResetColor, filePath, getAction(config.Mode))
+		}
 
 		successCount++
 	}
