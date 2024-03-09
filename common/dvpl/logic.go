@@ -24,6 +24,45 @@ type DVPLFooter struct {
 	Type           uint32 // Type of compression used (0 - None, 2 - LZ4)
 }
 
+// createDVPLFooter creates a DVPL footer from the provided data.
+func createDVPLFooter(inputSize, compressedSize, crc32, typeVal uint32) []byte {
+	result := make([]byte, dvplFooterSize)
+	writeLittleEndianUint32(result, inputSize, 0)
+	writeLittleEndianUint32(result, compressedSize, 4)
+	writeLittleEndianUint32(result, crc32, 8)
+	writeLittleEndianUint32(result, typeVal, 12)
+	copy(result[16:], dvplFooter)
+	return result
+}
+
+// readDVPLFooter reads the DVPL footer data from a DVPL buffer.
+func readDVPLFooter(buffer []byte) (*DVPLFooter, error) {
+	footerBuffer := buffer[len(buffer)-dvplFooterSize:]
+	if string(footerBuffer[16:]) != dvplFooter || len(footerBuffer) != dvplFooterSize {
+		return nil, errors.New(colors.RedColor + "InvalidDVPLFooter" + colors.ResetColor)
+	}
+
+	footerData := &DVPLFooter{}
+	footerData.OriginalSize = readLittleEndianUint32(footerBuffer, 0)
+	footerData.CompressedSize = readLittleEndianUint32(footerBuffer, 4)
+	footerData.CRC32 = readLittleEndianUint32(footerBuffer, 8)
+	footerData.Type = readLittleEndianUint32(footerBuffer, 12)
+	return footerData, nil
+}
+
+// writeLittleEndianUint32 writes a little-endian uint32 value to a byte slice at the specified offset.
+func writeLittleEndianUint32(b []byte, v uint32, offset int) {
+	b[offset+0] = byte(v)
+	b[offset+1] = byte(v >> 8)
+	b[offset+2] = byte(v >> 16)
+	b[offset+3] = byte(v >> 24)
+}
+
+// readLittleEndianUint32 reads a little-endian uint32 value from a byte slice at the specified offset.
+func readLittleEndianUint32(b []byte, offset int) uint32 {
+	return uint32(b[offset]) | uint32(b[offset+1])<<8 | uint32(b[offset+2])<<16 | uint32(b[offset+3])<<24
+}
+
 // CompressDVPL compresses a buffer and returns the processed DVPL file buffer.
 func CompressDVPL(buffer []byte) ([]byte, error) {
 	// Calculate the maximum possible compressed block size
@@ -92,43 +131,4 @@ func DecompressDVPL(buffer []byte) ([]byte, error) {
 
 	// Unknown compression type
 	return nil, errors.New(colors.RedColor + "UNKNOWN DVPL FORMAT" + colors.ResetColor)
-}
-
-// createDVPLFooter creates a DVPL footer from the provided data.
-func createDVPLFooter(inputSize, compressedSize, crc32, typeVal uint32) []byte {
-	result := make([]byte, dvplFooterSize)
-	writeLittleEndianUint32(result, inputSize, 0)
-	writeLittleEndianUint32(result, compressedSize, 4)
-	writeLittleEndianUint32(result, crc32, 8)
-	writeLittleEndianUint32(result, typeVal, 12)
-	copy(result[16:], dvplFooter)
-	return result
-}
-
-// readDVPLFooter reads the DVPL footer data from a DVPL buffer.
-func readDVPLFooter(buffer []byte) (*DVPLFooter, error) {
-	footerBuffer := buffer[len(buffer)-dvplFooterSize:]
-	if string(footerBuffer[16:]) != dvplFooter || len(footerBuffer) != dvplFooterSize {
-		return nil, errors.New(colors.RedColor + "InvalidDVPLFooter" + colors.ResetColor)
-	}
-
-	footerData := &DVPLFooter{}
-	footerData.OriginalSize = readLittleEndianUint32(footerBuffer, 0)
-	footerData.CompressedSize = readLittleEndianUint32(footerBuffer, 4)
-	footerData.CRC32 = readLittleEndianUint32(footerBuffer, 8)
-	footerData.Type = readLittleEndianUint32(footerBuffer, 12)
-	return footerData, nil
-}
-
-// writeLittleEndianUint32 writes a little-endian uint32 value to a byte slice at the specified offset.
-func writeLittleEndianUint32(b []byte, v uint32, offset int) {
-	b[offset+0] = byte(v)
-	b[offset+1] = byte(v >> 8)
-	b[offset+2] = byte(v >> 16)
-	b[offset+3] = byte(v >> 24)
-}
-
-// readLittleEndianUint32 reads a little-endian uint32 value from a byte slice at the specified offset.
-func readLittleEndianUint32(b []byte, offset int) uint32 {
-	return uint32(b[offset]) | uint32(b[offset+1])<<8 | uint32(b[offset+2])<<16 | uint32(b[offset+3])<<24
 }
