@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"time" // Import the time package for time tracking
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/rifsxd/dvpl_lz4/common/colors"
