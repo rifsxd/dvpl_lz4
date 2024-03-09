@@ -41,7 +41,7 @@ func Cli() {
 		if err != nil {
 			log.Printf("%s%s FAILED%s: %v", colors.RedColor, strings.ToUpper(config.Mode), colors.ResetColor, err)
 		} else {
-			log.Printf("%s%s FINISHED%s. Successful conversions: %s%d%s, Failed conversions: %s%d%s, Ignored conversions: %s%d%s", colors.GreenColor, strings.ToUpper(config.Mode), colors.ResetColor, colors.GreenColor, successCount, colors.ResetColor, colors.RedColor, failureCount, colors.ResetColor, colors.YellowColor, ignoredCount, colors.ResetColor)
+			log.Printf("%s%s FINISHED%s. Successful conversions: %s%d%s, Failed conversions: %s%d%s, Ignored files: %s%d%s", colors.GreenColor, strings.ToUpper(config.Mode), colors.ResetColor, colors.GreenColor, successCount, colors.ResetColor, colors.RedColor, failureCount, colors.ResetColor, colors.YellowColor, ignoredCount, colors.ResetColor)
 		}
 	case "verify":
 		successCount, failureCount, ignoredCount, err := utils.VerifyDVPLFiles(config.Path, config)
