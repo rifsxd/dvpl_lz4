@@ -102,6 +102,7 @@ func PrintHelpMessage() {
     	-keep-originals flag keeps the original files after compression/decompression.
 		-path specifies the directory/files path to process. Default is the current directory.
 		-ignore specifies comma-separated file extensions to ignore during compression.
+		-silent disables all file processing verbose information
 
 	• usage can be one of the following examples:
 
@@ -132,6 +133,9 @@ func PrintHelpMessage() {
 		$ dvpl_lz4 -mode verify -path /path/to/verify/compress.yaml.dvpl
 
 		$ dvpl_lz4 -mode verify -path /path/to/verify/
+
+		$ dvpl_lz4 -mode dcompress -silent
+
 	`)
 }
 
