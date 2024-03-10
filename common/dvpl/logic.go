@@ -37,9 +37,14 @@ func createDVPLFooter(inputSize, compressedSize, crc32, typeVal uint32) []byte {
 
 // readDVPLFooter reads the DVPL footer data from a DVPL buffer.
 func readDVPLFooter(buffer []byte) (*DVPLFooter, error) {
+	if len(buffer) < dvplFooterSize {
+		return nil, errors.New(colors.RedColor + "InvalidDVPLFooter: Buffer size is smaller than expected" + colors.ResetColor)
+	}
+
 	footerBuffer := buffer[len(buffer)-dvplFooterSize:]
-	if string(footerBuffer[16:]) != dvplFooter || len(footerBuffer) != dvplFooterSize {
-		return nil, errors.New(colors.RedColor + "InvalidDVPLFooter" + colors.ResetColor)
+
+	if string(footerBuffer[16:]) != dvplFooter {
+		return nil, errors.New(colors.RedColor + "InvalidDVPLFooter: Footer signature mismatch" + colors.ResetColor)
 	}
 
 	footerData := &DVPLFooter{}
