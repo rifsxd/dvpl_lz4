@@ -19,22 +19,24 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.20'  # Specify the Go version you want to use
+          go-version: '1.20'
 
       - name: Install dependencies
         run: go mod tidy
 
       - name: Build
-        run: go build -o dvpl_lz4-linux ./...  # Change 'dvpl_lz4-linux' to your desired output name
+        run: |
+          mkdir -p bin
+          go build -o bin/dvpl_lz4-linux
 
       - name: Run tests
-        run: go test ./...  # Run your tests
+        run: go test ./...
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: dvpl_lz4-linux
-          path: dvpl_lz4-linux  # Path to your built executable
+          path: bin/dvpl_lz4-linux
 
   build-windows:
     runs-on: windows-latest
@@ -46,19 +48,21 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.20'  # Specify the Go version you want to use
+          go-version: '1.20'
 
       - name: Install dependencies
         run: go mod tidy
 
       - name: Build
-        run: go build -o dvpl_lz4-windows.exe ./...  # Change 'dvpl_lz4-windows.exe' to your desired output name
+        run: |
+          mkdir -p bin
+          go build -o bin/dvpl_lz4-windows.exe
 
       - name: Run tests
-        run: go test ./...  # Run your tests
+        run: go test ./...
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: dvpl_lz4-windows
-          path: dvpl_lz4-windows.exe  # Path to your built executable
+          path: bin/dvpl_lz4-windows.exe
