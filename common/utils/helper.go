@@ -151,6 +151,12 @@ func ProcessFiles(directoryOrFile string, config *Config) (successCount, failure
 		return 0, 0, 0, err
 	}
 
+	// Get the path of the currently running executable
+	executablePath, err := os.Executable()
+	if err != nil {
+		return 0, 0, 0, err
+	}
+
 	if info.IsDir() {
 		dirList, err := os.ReadDir(directoryOrFile)
 		if err != nil {
@@ -169,6 +175,15 @@ func ProcessFiles(directoryOrFile string, config *Config) (successCount, failure
 			ignoredCount += ignored
 		}
 	} else {
+		// Check if the file is the executable itself
+		if directoryOrFile == executablePath {
+			if config.Verbose {
+				fmt.Printf("\n%sIgnoring%s own executable file %s\n", colors.YellowColor, colors.ResetColor, directoryOrFile)
+			}
+			ignoredCount++
+			return successCount, failureCount, ignoredCount, nil
+		}
+
 		isDecompression := config.Mode == "decompress" && strings.HasSuffix(directoryOrFile, dvplExtension)
 		isCompression := config.Mode == "compress" && !strings.HasSuffix(directoryOrFile, dvplExtension)
 
@@ -261,6 +276,12 @@ func VerifyDVPLFiles(directoryOrFile string, config *Config) (successCount, fail
 		return 0, 0, 0, err
 	}
 
+	// Get the path of the currently running executable
+	executablePath, err := os.Executable()
+	if err != nil {
+		return 0, 0, 0, err
+	}
+
 	if info.IsDir() {
 		dirList, err := os.ReadDir(directoryOrFile)
 		if err != nil {
@@ -279,6 +300,15 @@ func VerifyDVPLFiles(directoryOrFile string, config *Config) (successCount, fail
 			ignoredCount += ignored
 		}
 	} else {
+		// Check if the file is the executable itself
+		if directoryOrFile == executablePath {
+			if config.Verbose {
+				fmt.Printf("\n%sIgnoring%s own executable file %s\n", colors.YellowColor, colors.ResetColor, directoryOrFile)
+			}
+			ignoredCount++
+			return successCount, failureCount, ignoredCount, nil
+		}
+
 		// Ignore non-.dvpl files during verification
 		if !strings.HasSuffix(directoryOrFile, dvplExtension) {
 			if config.Verbose {

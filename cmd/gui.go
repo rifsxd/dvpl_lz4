@@ -77,6 +77,16 @@ func Gui() {
 		config.Path = path
 	}
 
+	// Button to select a directory
+	selectFolderButton := widget.NewButton("Select Directory", func() {
+		dialog.ShowFolderOpen(func(uri fyne.ListableURI, err error) {
+			if uri != nil {
+				pathEntry.SetText(uri.Path()) // Set the selected path in the text entry
+				config.Path = uri.Path()      // Update the config with the selected path
+			}
+		}, myWindow)
+	})
+
 	// Create a button for the "Verify" operation
 	verifyButton := widget.NewButton("Verify", func() {
 		config := &utils.Config{
@@ -96,6 +106,7 @@ func Gui() {
 			widget.NewFormItem("Extensions:", ignoreEntry),
 			widget.NewFormItem("Path:", pathEntry),
 		),
+		selectFolderButton, // Add the "Select Directory" button to the UI
 	)
 
 	myWindow.SetContent(content)
