@@ -3,11 +3,10 @@ name: Go Build
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
-  workflow_dispatch:
+      - master
 
 jobs:
   build-linux:
@@ -15,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
           go-version: '1.20'  # Specify the Go version you want to use
 
@@ -32,7 +31,7 @@ jobs:
         run: go test ./...  # Run your tests
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: dvpl_lz4-linux
           path: dvpl_lz4-linux  # Path to your built executable
@@ -42,10 +41,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
           go-version: '1.20'  # Specify the Go version you want to use
 
@@ -59,7 +58,7 @@ jobs:
         run: go test ./...  # Run your tests
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: dvpl_lz4-windows
           path: dvpl_lz4-windows.exe  # Path to your built executable
