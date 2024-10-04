@@ -1,6 +1,15 @@
 # Dvpl_Lz4 Cli/Gui Converter
 - A Cli/Gui Tool Coded In Golang To Convert WoTB ( Dava ) SmartDLC DVPL File Based On LZ4 High Compression.
 
+<div align="center">
+	
+[![GitHub license](https://img.shields.io/github/license/rifsxd/dvpl_lz4?logo=apache&label=License&style=flat)](https://github.com/rifsxd/dvpl_lz4/blob/master/LICENSE)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/rifsxd/dvpl_lz4/total?logo=github&label=Downloads&style=flat)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/rifsxd/dvpl_lz4?style=flat&label=Code%20Size)
+[![GitHub Debug CI Status](https://img.shields.io/github/actions/workflow/status/rifsxd/dvpl_lz4/build.yml?logo=github&label=Beta%20CI&style=flat)](https://github.com/rifsxd/dvpl_lz4/actions/workflows/build.yml)
+
+</div>
+
 Usage :
 
   - dvpl_lz4 [-mode] [-keep-originals] [-path] [-ignore]
